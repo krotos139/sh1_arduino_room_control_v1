@@ -1,3 +1,34 @@
+/*
+Author: Iuri Iakovlev <krotos139@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  (Это свободная программа: вы можете перераспространять ее и/или изменять
+   ее на условиях Стандартной общественной лицензии GNU в том виде, в каком
+   она была опубликована Фондом свободного программного обеспечения; либо
+   версии 3 лицензии, либо (по вашему выбору) любой более поздней версии.
+
+   Эта программа распространяется в надежде, что она будет полезной,
+   но БЕЗО ВСЯКИХ ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА
+   или ПРИГОДНОСТИ ДЛЯ ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ. Подробнее см. в Стандартной
+   общественной лицензии GNU.
+
+   Вы должны были получить копию Стандартной общественной лицензии GNU
+   вместе с этой программой. Если это не так, см.
+   <http://www.gnu.org/licenses/>.)
+*/
+
 #include "DHT.h"
 #include "IRremote.h"
 #include "SimpleModbusSlave.h"
@@ -60,7 +91,9 @@ enum
   RGBLED_B_VAL,
   
   TEMPERATURE_VAL,
+  TEMPERATURE_FRAC_VAL,
   HUMIDITY_VAL,
+  HUMIDITY_FRAC_VAL,
   IR_MOTION_VAL,
   MQ2_SENSOR_VAL,
   PL_CURRENT_VAL,
@@ -92,11 +125,13 @@ dht dht_s1;
 IRsend irsend;
 
 // ========================СТАРТУЕМ=============================
-// ========================Управляем св.диодом на 4-м пине==========
 void setup(){
 
-  //Serial.begin(9600); 
-  //Serial.println("Weather Z1 v 0.1"); // Тестовые строки для отображения в мониторе порта
+  Serial.begin(9600); 
+  while (!Serial) ;
+  Serial.println("Room Z1 v 0.2"); // Тестовые строки для отображения в мониторе порта
+  Serial.print("HOLDING_REGS_SIZE="); 
+  Serial.println(HOLDING_REGS_SIZE);
   // Init modbus
   holdingRegs[DEVICE_ID] = mb_device_id;
   holdingRegs[STATE_ID] = STID_LOADING;
@@ -173,7 +208,9 @@ void Z1_input_dht() {
     holdingRegs[STATE_ID] = STID_DHT22_ERROR;
   }
   holdingRegs[TEMPERATURE_VAL] = temperature;
+  holdingRegs[TEMPERATURE_FRAC_VAL] = (int)(temperature*100) % 100;
   holdingRegs[HUMIDITY_VAL] = humidity;
+  holdingRegs[HUMIDITY_FRAC_VAL] = (int)(humidity*100) % 100;
 }
 
 void Z1_input_irmotion() {
