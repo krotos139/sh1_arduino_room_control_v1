@@ -129,9 +129,8 @@ void setup(){
 
   Serial.begin(9600); 
   while (!Serial) ;
-  Serial.println("Room Z1 v 0.2"); // Тестовые строки для отображения в мониторе порта
-  Serial.print("HOLDING_REGS_SIZE="); 
-  Serial.println(HOLDING_REGS_SIZE);
+//  Serial.println("Room Z1 v 0.2"); // Тестовые строки для отображения в мониторе порта
+
   // Init modbus
   holdingRegs[DEVICE_ID] = mb_device_id;
   holdingRegs[STATE_ID] = STID_LOADING;
